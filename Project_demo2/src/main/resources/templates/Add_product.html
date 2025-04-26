@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Manager</title>
+</head>
+<body>
+<div align="center">
+    <h1>Add New Product</h1>
+    <form action="/save" method="post">
+        <input type="hidden" name="id" />
+        <table>
+            <tr>
+                <td><label for="name">Product Name:</label></td>
+                <td><input type="text" id="name" name="name" required></td>
+            </tr>
+            <tr>
+                <td><label for="brand">Product Brand:</label></td>
+                <td><input type="text" id="brand" name="brand" required></td>
+            </tr>
+            <tr>
+                <td><label for="madein">Made In:</label></td>
+                <td><input type="text" id="madein" name="madein" required></td>
+            </tr>
+            <tr>
+                <td><label for="price">Price:</label></td>
+                <td><input type="number" id="price" name="price" step="0.01" required></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <button type="submit">Add Product</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
+</body>
+</html>

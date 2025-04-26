@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product manager</title>
+</head>
+<body>
+<div align="center">
+    <h1>Product List</h1>
+    <table border="1" cellpadding="10">
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product name</th>
+            <th>Product brand</th>
+            <th>Product Made In</th>
+            <th>Product price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${listproducts}" >
+            <td th:text="${product.id}">Product ID</td>
+            <td th:text="${product.name}">Product Name</td>
+            <td th:text="${product.brand}">Product Brand</td>
+            <td th:text="${product.madein}">Product MadeIn</td>
+            <td th:text="${product.price}">Product Price</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
