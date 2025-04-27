@@ -1,63 +1,62 @@
 package com.ruhict.restapiservice.nonrest.Payroll;
 
-import java.util.List;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-class EmployeeController {
+@Controller
+public class EmployeeController {
 
     private final EmployeeRepository repository;
 
-    EmployeeController(EmployeeRepository repository) {
+    public EmployeeController(EmployeeRepository repository) {
         this.repository = repository;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
-    @GetMapping("/employees")
-    List<Employee> all() {
-        return repository.findAll();
-    }
-    // end::get-aggregate-root[]
-
-    @PostMapping("/employees")
-    Employee newEmployee(@RequestBody Employee newEmployee) {
-        return repository.save(newEmployee);
+    @GetMapping("/")
+    public String showEmployeeList(Model model) {
+        model.addAttribute("employees", repository.findAll());
+        return "employees";
     }
 
-    // Single item
+    @GetMapping("/employees/new")
+    public String showNewForm(Model model) {
+        model.addAttribute("employee", new Employee());
+        return "employee-form";
+    }
+
+    @PostMapping("/employees/save")
+    public String saveEmployee(@ModelAttribute Employee employee) {
+        repository.save(employee);
+        return "redirect:/";
+    }
+
+    @GetMapping("/employees/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
+        model.addAttribute("employee", employee);
+        return "employee-form";
+    }
+
+    @PostMapping("/employees/update/{id}")
+    public String updateEmployee(@PathVariable Long id, @ModelAttribute Employee employee) {
+        employee.setId(id);
+        repository.save(employee);
+        return "redirect:/";
+    }
+
+    @PostMapping("/employees/delete/{id}")
+    public String deleteEmployee(@PathVariable Long id) {
+        repository.deleteById(id);
+        return "redirect:/";
+    }
 
     @GetMapping("/employees/{id}")
-    Employee one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public String viewEmployee(@PathVariable Long id, Model model) {
+        Employee employee = repository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
-    }
-
-    @PutMapping("/employees/{id}")
-    Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(employee -> {
-                    employee.setName(newEmployee.getName());
-                    employee.setRole(newEmployee.getRole());
-                    return repository.save(employee);
-                })
-                .orElseGet(() -> {
-                    return repository.save(newEmployee);
-                });
-    }
-
-    @DeleteMapping("/employees/{id}")
-    void deleteEmployee(@PathVariable Long id) {
-        repository.deleteById(id);
+        model.addAttribute("employee", employee);
+        return "employee-detail";
     }
 }
